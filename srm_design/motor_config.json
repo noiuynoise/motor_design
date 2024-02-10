@@ -1,0 +1,71 @@
+{
+  "simulation": {
+    "automesh": true,
+    "mesh_size": 0.5,
+    "airgap_material": "air",
+    "units": "millimeters",
+    "frequency": 0,
+    "problem_type": "planar",
+    "precision": 1e-8,
+    "depth": 10,
+    "min_angle": 30,
+    "solver": 0,
+    "outer_material": "air",
+    "outer_diameter": 30
+  },
+  "materials": [
+    {
+      "name": "laminations",
+      "library": "M-15 Steel"
+    },
+    {
+      "name": "air",
+      "library": "Air"
+    },
+    {
+      "name": "coil",
+      "library": "22 AWG"
+    }
+  ],
+  "stator": {
+    "slots": 6,
+    "tooth_tip_width": 3.0,
+    "tooth_root_width": 3.0,
+    "inner_diameter": 12.2,
+    "outer_diameter": 22,
+    "spine_width": 2.0,
+    "material": "laminations",
+    "tooth_root_radius": 0.5,
+    "tooth_tip_radius": 0
+  },
+  "rotor": {
+    "poles": 4,
+    "pole_tip_width": 3.0,
+    "pole_root_width": 3.0,
+    "shaft_diameter": 2,
+    "rib_width": 2.0,
+    "outer_diameter": 12.0,
+    "material": "laminations",
+    "shaft_material": "air",
+    "pole_tip_radius": 0.1,
+    "pole_root_radius": 0.5
+  },
+  "winding": {
+    "turns": 10,
+    "material": "coil",
+    "order": [
+      "a+",
+      "a-",
+      "b+",
+      "b-",
+      "c+",
+      "c-",
+      "a-",
+      "a+",
+      "b-",
+      "b+",
+      "c-",
+      "c+"
+    ]
+  }
+}

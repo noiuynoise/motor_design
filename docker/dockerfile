@@ -1,0 +1,43 @@
+from ubuntu:22.04
+
+# export timezone - for python3.9-dev install
+ENV TZ=America/Denver
+
+# place timezone data /etc/timezone
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN dpkg --add-architecture i386
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+  python3 \
+  python3-pip \
+  vim \
+  git \
+  wget \
+  sudo
+
+RUN mkdir -pm755 /etc/apt/keyrings
+RUN wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
+RUN wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/jammy/winehq-jammy.sources
+
+RUN apt-get update && apt-get install -y --install-recommends winehq-stable
+
+RUN pip3 install pyfemm PyQt5 colorama
+
+RUN wget -O /usr/share/femm.exe "https://www.femm.info/wiki/Files/files.xml?action=download&file=femm42bin_x64_21Apr2019.exe"
+
+# Configure user
+RUN addgroup --gid 1000 devuser
+RUN adduser --disabled-password --gecos "" --uid 1000 --gid 1000 devuser
+ENV HOME /home/devuser
+RUN echo 'ALL            ALL = (ALL) NOPASSWD: ALL' >> /etc/sudoers
+
+RUN sudo -udevuser mkdir -p /home/devuser/.wine/drive_c/users/devuser/Favorites
+
+RUN ln -s /code /home/devuser/.wine/drive_c/users/devuser/Favorites
+
+ENV WINEDEBUG=-all
+
+USER devuser
+WORKDIR /code
