@@ -9,6 +9,9 @@ import time
 
 
 if __name__ == "__main__":
+
+    run_stats = {}
+
     start = time.monotonic()
     filepath = 'initial_config.json'
     if not os.path.isfile(filepath):
@@ -21,13 +24,16 @@ if __name__ == "__main__":
     last_run = 0
     for folder in folders:
         if folder[:4] == 'run_':
-            last_run = max(last_run, int(folder[5:]))
+            last_run = max(last_run, int(folder[4:]))
     run_folder = f'runs/run_{last_run + 1}'
+    os.mkdir(run_folder)
+    os.system(f'cp {__file__} {run_folder}/run.py')
+    os.system(f'cp initial_config.json {run_folder}/initial_config.json')
 
     # for now test tooth widths 2 - 4
 
     for i in range(6, 8):
-        for j in [0.5, 1, 1.5]:
+        for j in [0]:
             femm.openfemm()
             width = i / 2
             test_folder = run_folder + f'/test_i_{width}_j_{j}'
@@ -57,3 +63,6 @@ if __name__ == "__main__":
             analysis.make_plots.plot_max_torque(results, test_folder + '/max_torque.png')
     end = time.monotonic()
     print(f'time elapsed: {end - start}\n')
+    run_stats['time'] = end - start
+    with open(test_folder + '/run.json', 'w') as f:
+        f.write(json.dumps(run_stats, indent=4))
