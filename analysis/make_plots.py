@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import json
 from argparse import ArgumentParser
 from copy import deepcopy
+from . import motor_specs
 
 def plot_flux_linkage(results_dict, output_file, title = None):
     results = deepcopy(results_dict)
@@ -79,17 +80,9 @@ def plot_max_torque(results_dict, output_file, title = None):
             x_axis.pop(idx-1)
     x_axis += [x_axis[-1] + x for x in x_axis]
 
-    torques = [res['torque'] for res in results] * 2
-
-    max_torques = [0] * len(results) * 2
-    for i in range(3):
-        phase_torques = torques[int(len(results) * i / 3):] + torques[:int(len(results) * i / 3)]
-        for j in range(len(results) * 2):
-            if phase_torques[j] > 0:
-                max_torques[j] += phase_torques[j]
     plt.plot(
         x_axis,
-        max_torques
+        motor_specs.GetDrivenTorque(results, len(results) / 3, 3) * 2
     )
     if title:
         plt.title(title)
@@ -103,8 +96,8 @@ if __name__ == "__main__":
     results = None
     with open(args.file, 'r') as f:
         results = json.loads(f.read())
-    plot_flux_linkage(results, "flux.png")
-    plot_torque(results, "torque.png")
+    # plot_flux_linkage(results, "flux.png")
+    # plot_torque(results, "torque.png")
     plot_max_torque(results, "max_torque.png")
 
     
