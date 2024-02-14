@@ -38,6 +38,7 @@ RUN sudo -udevuser mkdir -p /home/devuser/.wine/drive_c/users/devuser/Favorites
 RUN ln -s /code /home/devuser/.wine/drive_c/users/devuser/Favorites
 
 ENV WINEDEBUG=-all
+ENV PYTHONUNBUFFERED=1
 
 USER devuser
 WORKDIR /code

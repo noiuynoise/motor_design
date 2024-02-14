@@ -36,11 +36,17 @@ if __name__ == '__main__':
 
     os.system(f'cp {__file__} {os.path.dirname(os.path.realpath(__file__))}/runs/manager.py')
 
+    start_time = time.monotonic()
+
     for i in range(args.run_start, args.run_end + 1, 1):
         while (get_running_containers(id) >= args.num_runners):
-            # print(f'waiting for runners to complete\n')
+            runs_complete = min(0, i - get_running_containers(id))
+            time_elapsed = time.monotonic() - start_time
+            time_remaining = "unknown"
+            if runs_complete > 0:
+                time_remaining = time_elapsed / runs_complete * (args.run_end - i)
+            print(f'{runs_complete} runs complete out of {args.num_runners}. {time_elapsed} elapsed. Estimated completion in: {time_remaining}\x1b[1K\r')
             time.sleep(5)
-        print(f'starting runner {i}\n')
         command = ['docker', 'run', '-d', '--rm', '--name', f'{id}_{i}',
                           '-v', '/tmp/.X11-unix:/tmp/.X11-unix',
                           '-e', 'DISPLAY=:0', '-v', f'{os.path.dirname(os.path.realpath(__file__))}:/code',

@@ -37,8 +37,8 @@ if __name__ == "__main__":
 
     # for now test tooth widths 2 - 4
 
-    test_folder = run_folder + f'/test'
-    os.mkdir(test_folder)
+    test_folder = run_folder #+ f'/test'
+    #os.mkdir(test_folder)
     test_config = copy(config)
     # config['stator']['tooth_tip_width'] = width
     # config['stator']['tooth_root_width'] = width
@@ -51,16 +51,18 @@ if __name__ == "__main__":
     femm.openfemm()
     motor_params = generate_motor.generate_motor(config, test_folder + '/srm.FEM')
     results = []
-    current = args.runner_number * 0.5
+    a_current = int(args.runner_number % 20) * 0.5
+    b_current = int(args.runner_number / 20) * 0.5
+    #current = args.runner_number * 0.5
     for angle in range(0, int(360 / config['rotor']['poles']), 1):
         # for current in range(0, 100, 3):
-        mage = None
+        image = None
         if angle % 10 == 0:
             image = test_folder + f'/image_{angle}.png'
         results.append(simulate_motor.simulate_motor(test_folder + '/srm.FEM',
                                                      motor_params['rotor_od'] / 2,
                                                      angle,
-                                                     current / 10, 0, 0,
+                                                     a_current, b_current, 0,
                                                      image_path = image,
                                                      temp_path = test_folder))
     with open(test_folder + '/results.json', 'w') as f:
