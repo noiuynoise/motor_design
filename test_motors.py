@@ -7,6 +7,7 @@ from analysis import make_plots
 from copy import copy
 import time
 import argparse
+from utils.motor_config_helper import MotorConfig
 
 
 if __name__ == "__main__":
@@ -39,7 +40,7 @@ if __name__ == "__main__":
 
     test_folder = run_folder #+ f'/test'
     #os.mkdir(test_folder)
-    test_config = copy(config)
+    test_config = MotorConfig(copy(config))
     # config['stator']['tooth_tip_width'] = width
     # config['stator']['tooth_root_width'] = width
     # config['stator']['spine_width'] = width / 2 + j
@@ -47,14 +48,14 @@ if __name__ == "__main__":
     # config['rotor']['pole_root_width'] = width
     # config['rotor']['rib_width'] = width / 2 + j
     with open(test_folder + '/motor_params.json', 'w') as f:
-        f.write(json.dumps(config, indent=4))
+        f.write(json.dumps(test_config.config, indent=4))
     femm.openfemm()
-    motor_params = generate_motor.generate_motor(config, test_folder + '/srm.FEM')
+    motor_params = generate_motor.generate_motor(test_config, test_folder + '/srm.FEM')
     results = []
     a_current = int(args.runner_number % 20) * 0.5
     b_current = int(args.runner_number / 20) * 0.5
     #current = args.runner_number * 0.5
-    for angle in range(0, int(360 / config['rotor']['poles']), 1):
+    for angle in range(0, int(test_config.pole_pitch), 1):
         # for current in range(0, 100, 3):
         image = None
         if angle % 10 == 0:

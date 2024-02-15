@@ -52,6 +52,7 @@
   },
   "winding": {
     "turns": 10,
+    "termination": "parallel",
     "material": "coil",
     "order": [
       "a+",

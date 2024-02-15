@@ -1,9 +1,12 @@
+#!/bin/python3
+
 import femm
 import os
 import json
 import math
 
 from typing import Dict, Any, List
+from utils.motor_config_helper import MotorConfig
 
 PRECISION = 1e-6
 
@@ -323,15 +326,8 @@ def load_materials(config):
             raise NotImplementedError('custom materials not yet supported')
 
 def add_circuits(config) -> List[str]:
-    windings = config["winding"]["order"]
-    circuit_names = []
-    for winding in windings:
-        # check that the last character is a + or -
-        if winding[-1] != "+" and winding[-1] != "-":
-            raise ValueError('winding name must end with + or -')
-        if winding[:-1] not in circuit_names:
-            circuit_names.append(winding[:-1])
-    
+    circuit_names = list(set(config.GetCircuits()))
+
     for name in circuit_names:
         femm.mi_addcircprop(name, 0, 1)
     
@@ -372,10 +368,5 @@ def generate_motor(config, output) -> Dict[str, Any]:
 
 if __name__ == "__main__":
     filepath = 'motor_config.json'
-    if not os.path.isfile(filepath):
-        raise ValueError('config not found')
-    
-    config_json = open(filepath, 'r')
-
-    config = json.loads(config_json.read())
+    config = MotorConfig(filepath)
     print(generate_motor(config, 'motor.FEM'))

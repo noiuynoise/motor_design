@@ -52,6 +52,7 @@
   },
   "winding": {
     "turns": 10,
+    "termination": "series",
     "material": "coil",
     "order": [
       "a+",

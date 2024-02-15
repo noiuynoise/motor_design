@@ -1,0 +1,17 @@
+{
+    "inverter": {
+        "max_voltage": 30,
+        "max_current": 40,
+        "max_frequency": 20000,
+        "mosfet_resistance": 0.001,
+        "max_duty_cycle": 0.95
+    },
+    "battery": {
+        "voltage": 24,
+        "internal_resistance": 0.050,
+        "inductance": 0
+    },
+    "settings": {
+        "desired_current": 20
+    }
+}
