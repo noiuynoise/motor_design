@@ -60,7 +60,7 @@ def run_simulation(motor_file, radius, angle, i_a, i_b, i_c, image_path = None, 
     if image_path:
         femm.mo_zoom(1, 1, -1, -1)
         femm.mo_zoomnatural()
-        femm.mo_showdensityplot(1, 0, 1.75, 0, 'bmag')
+        femm.mo_showdensityplot(1, 0, 2.3, 0, 'bmag')
         femm.mo_clearblock()
         femm.mo_savebitmap(image_path)
 

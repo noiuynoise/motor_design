@@ -96,8 +96,8 @@ if __name__ == "__main__":
     results = None
     with open(args.file, 'r') as f:
         results = json.loads(f.read())
-    # plot_flux_linkage(results, "flux.png")
-    # plot_torque(results, "torque.png")
+    plot_flux_linkage(results, "flux.png")
+    plot_torque(results, "torque.png")
     plot_max_torque(results, "max_torque.png")
 
     

@@ -16,7 +16,8 @@
   "materials": [
     {
       "name": "laminations",
-      "library": "M-15 Steel"
+      "library": "M-15 Steel",
+      "saturation": 2.30001
     },
     {
       "name": "air",
@@ -24,26 +25,26 @@
     },
     {
       "name": "coil",
-      "library": "22 AWG"
+      "library": "24 AWG"
     }
   ],
   "stator": {
     "slots": 6,
-    "tooth_tip_width": 3.0,
-    "tooth_root_width": 3.0,
+    "tooth_tip_width": 3.5,
+    "tooth_root_width": 3.5,
     "inner_diameter": 12.2,
     "outer_diameter": 22,
-    "spine_width": 2.0,
+    "spine_width": 1.75,
     "material": "laminations",
     "tooth_root_radius": 0.5,
     "tooth_tip_radius": 0
   },
   "rotor": {
     "poles": 4,
-    "pole_tip_width": 3.0,
-    "pole_root_width": 3.0,
-    "shaft_diameter": 2,
-    "rib_width": 2.0,
+    "pole_tip_width": 3.5,
+    "pole_root_width": 3.5,
+    "shaft_diameter": 4,
+    "rib_width": 1.75,
     "outer_diameter": 12.0,
     "material": "laminations",
     "shaft_material": "air",
@@ -51,8 +52,8 @@
     "pole_root_radius": 0.5
   },
   "winding": {
-    "turns": 10,
-    "termination": "parallel",
+    "turns": 15,
+    "termination": "series",
     "material": "coil",
     "order": [
       "a+",

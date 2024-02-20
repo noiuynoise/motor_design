@@ -37,15 +37,16 @@ if __name__ == '__main__':
     os.system(f'cp {__file__} {os.path.dirname(os.path.realpath(__file__))}/runs/manager.py')
 
     start_time = time.monotonic()
-
+    print(f'starting {args.num_runners} runners', end='\r')
     for i in range(args.run_start, args.run_end + 1, 1):
         while (get_running_containers(id) >= args.num_runners):
-            runs_complete = min(0, i - get_running_containers(id))
+            runs_complete = max(0, i - get_running_containers(id))
             time_elapsed = time.monotonic() - start_time
             time_remaining = "unknown"
             if runs_complete > 0:
-                time_remaining = time_elapsed / runs_complete * (args.run_end - i)
-            print(f'{runs_complete} runs complete out of {args.num_runners}. {time_elapsed} elapsed. Estimated completion in: {time_remaining}\x1b[1K\r')
+                time_remaining = time_elapsed / runs_complete * (args.run_end - i + args.num_runners)
+                time_remaining = f'{int(time_remaining / 3600)}h {int(time_remaining / 60) % 60}m {int(time_remaining) % 60}s'
+            print(f'{runs_complete} runs complete out of {args.run_end - args.run_start}. {int(time_elapsed)}s elapsed. Estimated completion in: {time_remaining}', end='\r')
             time.sleep(5)
         command = ['docker', 'run', '-d', '--rm', '--name', f'{id}_{i}',
                           '-v', '/tmp/.X11-unix:/tmp/.X11-unix',
@@ -58,22 +59,3 @@ if __name__ == '__main__':
     while (get_running_containers(id) > 0):
         time.sleep(5)
     print('all runners complete\n')
-
-    # containers_proc = subprocess.Popen(['docker', 'ps', '-a', '--format', '{{json .}}'], stdout=subprocess.PIPE)
-    # jq_proc = subprocess.Popen(['jq', '--tab', '-s', '.'], stdin=containers_proc.stdout, stdout=subprocess.PIPE)
-    # jq_proc.wait()
-    # containers = json.loads(jq_proc.communicate()[0].decode('utf-8'))
-
-    # available_container_numbers = []
-    # last_container_number = -1
-    # prefix = 'pyfemm_runner_'
-    # for container in containers:
-    #     if container['Names'][:len(prefix)] == prefix:
-    #         last_container_number = max(last_container_number, int(container['Names'][len(prefix):]))
-    #         if container['State'] != 'running':
-    #             available_container_numbers.append(int(container['Names'][len(prefix):]))
-
-    # # if len(available_container_numbers) < args.num_runners:
-    # #     if last_container_number is None:
-    
-    # print(available_container_numbers)

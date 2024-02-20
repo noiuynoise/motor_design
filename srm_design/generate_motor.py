@@ -322,6 +322,8 @@ def load_materials(config):
         if 'library' in material:
             femm.mi_getmaterial(material['library'])
             femm.mi_modifymaterial(material['library'], 0, material['name'])
+            if 'saturation' in material:
+                femm.mi_addbhpoint(material['name'], material['saturation'], 1e10)
         else:
             raise NotImplementedError('custom materials not yet supported')
 

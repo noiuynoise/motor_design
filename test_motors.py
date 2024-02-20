@@ -52,11 +52,13 @@ if __name__ == "__main__":
     femm.openfemm()
     motor_params = generate_motor.generate_motor(test_config, test_folder + '/srm.FEM')
     results = []
-    a_current = int(args.runner_number % 20) * 0.5
-    b_current = int(args.runner_number / 20) * 0.5
+    a_current = int(args.runner_number) #* 0.1
+    b_current = 0
     #current = args.runner_number * 0.5
+    start_time = time.monotonic()
     for angle in range(0, int(test_config.pole_pitch), 1):
         # for current in range(0, 100, 3):
+        print(f'running angle {angle} at time {time.monotonic() - start_time}\n')
         image = None
         if angle % 10 == 0:
             image = test_folder + f'/image_{angle}.png'

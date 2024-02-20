@@ -29,7 +29,7 @@ class SimulationResults:
         self.config = config
 
         self.current_limit = 10
-        self.bus_voltage = 6
+        self.bus_voltage = 24
 
         for file in os.listdir(sim_results_loc):
             ext = '_ordered.npy'
@@ -70,9 +70,10 @@ class SimulationResults:
 
     # speed in RPM. CCW only (B is leading A)
     def GetCoilEmf(self, a_current, a_didt, b_current, b_didt, angle, speed) -> float:
-        # flux is flux LINKAGE of coil. Must be multiplied by turns
+        # flux is total flux of coil.
         speed_deg_s = speed * 360 / 60
         slope = self.InterpolateDerivative(a_current, b_current, angle, 'a_flux')
+        #print(f'angle: {angle}, slope: {slope}')
         return float(self.config['winding']['turns'] * (a_didt * slope[0] + b_didt * slope[1] + speed_deg_s * slope[2]))
     
     def GetEmf(self, a_current, a_didt, b_current, b_didt, angle, speed) -> float:
@@ -99,7 +100,9 @@ class SimulationResults:
             coil_voltage = current * coil_resistance + math.copysign(self.GetEmf(abs(current), 0, 0, 0, angle, speed), current)
             if abs(coil_voltage - self.bus_voltage) < VOLTAGE_TOLERANCE:
                 return abs(self.InterpolatePoint(abs(current), 0, angle, 'torque'))
-        print(f'error: max torque point not found after {MAX_STEPS} steps. Residual error: {coil_voltage - self.bus_voltage} V')
+            #print(f'step: {_} current: {current}, voltage: {coil_voltage}, EMF: {self.GetEmf(abs(current), 0, 0, 0, angle, speed)}')
+        print(f'error: max torque point not found after {MAX_STEPS} steps for speed {speed} RPM. Residual error: {coil_voltage - self.bus_voltage} V')
+        #raise ValueError('max torque point not found')
         return self.InterpolatePoint(self.config.GetCoilCurrent(abs(current)), 0, angle, 'torque')
 
     # speed in RPM
@@ -110,6 +113,7 @@ class SimulationResults:
             output.append(max(phase_torques[int(angle / self.angle_step)],
                               phase_torques[int(((angle + self.config.slot_pitch) % self.angle_max) / self.angle_step)],
                               phase_torques[int(((angle + self.config.slot_pitch * 2) % self.angle_max) / self.angle_step)]))
+        #return output
         # take the RMS
         output = [x ** 2 for x in output]
         return (sum(output) / len(output)) ** 0.5
@@ -140,24 +144,27 @@ if __name__ == "__main__":
         print(f'error: no combined folder found in {args.data_folder}')
         exit(1)
 
-    results = SimulationResults(args.data_folder + '/combined', motor_params, 0.5, 0.5, 1)
+    results = SimulationResults(args.data_folder + '/combined', None, motor_params, 0.5, 0.5, 1)
 
-    bldc_torque = BldcTorqueCurve(1400, 25000, 0.307, 15, 13)
+    bldc_torque = BldcTorqueCurve(1400, 25000, 0.307, 10, 13)
     bldc_power = [x * 2 * math.pi / 60 * bldc_torque[x] for x in range(25000)]
     x_ax = [x for x in range(0, 25000)]
 
     plt.figure()
     plt.xlabel('speed (RPM)')
     #plt.plot(x_ax, bldc_torque)
-    #plt.plot([x for x in range(0, 10000, 30)], [results.GetRmsTorque(x) for x in range(0, 10000, 30)])
-    plt.plot([x for x in range(90)], [results.GetEmf(10, 0, 0, 0, x, 1000) for x in range(90)])
+    plt.plot([x for x in range(0, 10000, 100)], [results.GetRmsTorque(x) for x in range(0, 10000, 100)])
+    #data = [results.InterpolateDerivative(6, 0, x, 'a_flux')[2] for x in range(0, 90)]
+    #data2 = [results.InterpolatePoint(10, 0, x, 'a_flux') for x in range(0, 90)]
+    #x_ax = [x for x in range(len(data))]
+    #plt.plot(x_ax, data)
+    #plt.figure()
+    #plt.plot(x_ax, data2)
+    #torque = results.results['torque'][:, 0, 60]
+    # torque = torque[0:int(len(torque) / 2):1]
+    #x_ax = [x * 0.5 for x in range(len(torque))]
+    #plt.plot(x_ax, torque)
+    #plt.plot(x_ax, [(x ** 2) * 0.0005 for x in x_ax])
+    #plt.plot([x for x in range(90)], [results.GetEmf(10, 0, 0, 0, x, 1000) for x in range(90)])
     plt.ylabel('Torque (N.m)')
     plt.show()
-
-    
-
-
-
-
-
-        

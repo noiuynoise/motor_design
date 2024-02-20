@@ -16,7 +16,8 @@
   "materials": [
     {
       "name": "laminations",
-      "library": "M-15 Steel"
+      "library": "M-15 Steel",
+      "saturation": 2.30001
     },
     {
       "name": "air",
@@ -24,7 +25,7 @@
     },
     {
       "name": "coil",
-      "library": "22 AWG"
+      "library": "24 AWG"
     }
   ],
   "stator": {
@@ -51,7 +52,7 @@
     "pole_root_radius": 0.5
   },
   "winding": {
-    "turns": 10,
+    "turns": 15,
     "termination": "series",
     "material": "coil",
     "order": [

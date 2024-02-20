@@ -3,6 +3,7 @@ import math
 import argparse
 import os
 
+# from: https://www.powerstream.com/Wire_Size.htm
 AWG_DIAMETER = {
     "10 AWG": 2.58826,
     "12 AWG": 2.05232,
