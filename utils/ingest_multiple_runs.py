@@ -6,6 +6,9 @@ import numpy as np
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='data ingest')
     parser.add_argument('run_location', type=str, help='location of run folder')
+    parser.add_argument('a_step', type=float, help='current A step')
+    parser.add_argument('b_step', type=float, help='current B step')
+    parser.add_argument('angle_step', type=float, help='angle step')
     args = parser.parse_args()
 
     run_folders = os.listdir(args.run_location)
@@ -76,13 +79,35 @@ if __name__ == "__main__":
         print(f'{key}: {combined_data[key].shape}')
     
     # sort into angle / current A / current B array
-    a_step = 0.5
-    b_step = 0.5
-    angle_step = 1
+    a_step = args.a_step
+    b_step = args.b_step
+    angle_step = args.angle_step
 
-    a_max = 20
-    b_max = 20
-    angle_max = 90
+    a_max = max(np.ndarray.flatten(combined_data['a_current']))
+    a_min = min(np.ndarray.flatten(combined_data['a_current']))
+    b_max = max(np.ndarray.flatten(combined_data['b_current']))
+    b_min = min(np.ndarray.flatten(combined_data['b_current']))
+    angle_max = max(np.ndarray.flatten(combined_data['angle']))
+    angle_min = min(np.ndarray.flatten(combined_data['angle']))
+
+    num_a = int((a_max - a_min) / a_step) + 1
+    num_b = int((b_max - b_min) / b_step) + 1
+    num_angle = int((angle_max - angle_min) / angle_step) + 1
+
+    # save the angle step to a json
+    angle_step_data = {
+        "a_step": a_step,
+        "b_step": b_step,
+        "angle_step": angle_step,
+        "a_max": a_max,
+        "a_min": a_min,
+        "b_max": b_max,
+        "b_min": b_min,
+        "angle_max": angle_max,
+        "angle_min": angle_min
+    }
+    with open(args.run_location + '/combined/step.json', 'w') as f:
+        f.write(json.dumps(angle_step_data, indent=4))
 
     a_current = np.ndarray.flatten(combined_data['a_current'])
     b_current = np.ndarray.flatten(combined_data['b_current'])
@@ -95,7 +120,7 @@ if __name__ == "__main__":
         if key == 'a_current' or key == 'b_current' or key == 'angle':
             continue
         flattened_data[key] = np.ndarray.flatten(combined_data[key])
-        ordered_data[key] = np.empty((int(a_max / a_step), int(b_max / b_step), int(angle_max / angle_step)), np.double)
+        ordered_data[key] = np.empty((int(a_max / a_step) + 1, int(b_max / b_step) + 1, int(angle_max / angle_step) + 1), np.double)
 
     for i in range(len(a_current)):
         for key in combined_data.keys():
@@ -112,6 +137,7 @@ if __name__ == "__main__":
         except:
             pass
         np.save(args.run_location + '/combined/' + key + '_ordered.npy', ordered_data[key])
+
         
 
 

@@ -21,6 +21,7 @@ AWG_DIAMETER = {
     "36 AWG": 0.127
 }
 
+
 class MotorConfig:
     def __init__(self, config):
         if type(config) == str:
@@ -32,7 +33,7 @@ class MotorConfig:
         elif type(config) == dict:
             self.config = config
             return
-        
+
         raise ValueError('MotorConfig requires either a file or a dictionary')
 
     def __getitem__(self, key):
@@ -61,11 +62,11 @@ class MotorConfig:
     @property
     def slot_pitch(self):
         return 360 / self['stator']['slots']
-    
+
     @property
     def pole_pitch(self):
         return 360 / self['rotor']['poles']
-    
+
     def GetCircuits(self):
         windings = self["winding"]["order"]
         circuit_names = []
@@ -80,22 +81,26 @@ class MotorConfig:
     @property
     def num_phases(self):
         return len(list(set(self.GetCircuits())))
-    
+
     @property
     def coils_per_phase(self):
         return self['stator']['slots'] / self.num_phases
-    
+
     def EstimateCoilResistance(self):
         COPPER_RESISTIVITY = 1.68e-8
-        resistance_per_meter = COPPER_RESISTIVITY / (math.pi * ((self.wire_diameter/ 1000 / 2) ** 2))
+        resistance_per_meter = COPPER_RESISTIVITY / \
+            (math.pi * ((self.wire_diameter / 1000 / 2) ** 2))
 
         # Calculate loop length
         depth = self['simulation']['depth']
-        tooth_width = (self['stator']['tooth_tip_width'] + self['stator']['tooth_root_width']) / 2
+        tooth_width = (self['stator']['tooth_tip_width'] +
+                       self['stator']['tooth_root_width']) / 2
 
         # Estimate coil distance over tooth as average of tooth width and width at the pole pitch radius
-        stator_center_radius = (self['stator']['inner_diameter'] + self['stator']['outer_diameter'] - self['stator']['spine_width'] * 2) / 2 / 2
-        pole_width = 2 * math.pi / self['stator']['slots'] * stator_center_radius
+        stator_center_radius = (self['stator']['inner_diameter'] + self['stator']
+                                ['outer_diameter'] - self['stator']['spine_width'] * 2) / 2 / 2
+        pole_width = 2 * math.pi / \
+            self['stator']['slots'] * stator_center_radius
         over_tooth = (pole_width + tooth_width) / 2
 
         loop_length = 2 * (depth + over_tooth)
@@ -107,7 +112,7 @@ class MotorConfig:
             return self.EstimateCoilResistance() / self.coils_per_phase
         else:
             return self.EstimateCoilResistance() * self.coils_per_phase
-    
+
     def GetCoilCurrent(self, phase_current):
         if self.termination_type == 'parallel':
             return phase_current / self.num_phases

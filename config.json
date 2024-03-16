@@ -30,9 +30,9 @@
   ],
   "stator": {
     "slots": 6,
-    "tooth_tip_width": 3.5,
-    "tooth_root_width": 3.5,
-    "inner_diameter": 12.2,
+    "tooth_tip_width": 3.0,
+    "tooth_root_width": 3.0,
+    "inner_diameter": 10.2,
     "outer_diameter": 22,
     "spine_width": 1.75,
     "material": "laminations",
@@ -41,18 +41,18 @@
   },
   "rotor": {
     "poles": 4,
-    "pole_tip_width": 3.5,
+    "pole_tip_width": 3.0,
     "pole_root_width": 3.5,
     "shaft_diameter": 4,
     "rib_width": 1.75,
-    "outer_diameter": 12.0,
+    "outer_diameter": 10.0,
     "material": "laminations",
     "shaft_material": "air",
     "pole_tip_radius": 0.1,
     "pole_root_radius": 0.5
   },
   "winding": {
-    "turns": 15,
+    "turns": 20,
     "termination": "series",
     "material": "coil",
     "order": [

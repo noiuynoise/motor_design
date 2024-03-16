@@ -2,7 +2,7 @@
 import os
 
 if __name__ == '__main__':
-    folders = os.listdir('runs')
+    folders = os.listdir('complete_runs')
     last_run = 0
     for folder in folders:
         if folder[:4] == 'run_':
