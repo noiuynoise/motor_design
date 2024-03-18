@@ -23,7 +23,7 @@ RUN wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/d
 
 RUN apt-get update && apt-get install -y --install-recommends winehq-stable
 
-RUN pip3 install pyfemm PyQt5 colorama
+RUN pip3 install pyfemm PyQt5 colorama imageio
 
 RUN wget -O /usr/share/femm.exe "https://www.femm.info/wiki/Files/files.xml?action=download&file=femm42bin_x64_21Apr2019.exe"
 

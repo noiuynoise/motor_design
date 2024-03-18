@@ -19,16 +19,25 @@ Then commit the container to a new image and delete the intermediate container:
 ```
 docker commit pyfemm_install pyfemm
 docker rm pyfemm_install
+docker image rm pyfemm_base
 ```
 
 To run FEMM run:
 ```
-docker run -it --rm -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY pyfemm_base wine /usr/share/femm.exe
+docker run -it --rm -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY pyfemm wine /usr/share/femm.exe
 ```
 
 To get a bash shell in the container run:
 ```
-docker run -it --rm -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY pyfemm_base bash
+docker run -it --rm -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY pyfemm bash
 ```
 
-It is probably possible to run the container headless after installing FEMM, but I haven't tried it yet.
+It is probably possible to run the container headless after installing FEMM, but I haven't been able to get this working
+
+To move the container to a new machine, use the following commands:
+```
+docker save -o pyfemm.tar pyfemm
+scp pyfemm.tar andrew@andrew-cnc.local:~
+rm pyfemm.tar
+ssh andrew@andrew-cnc.local "docker load -i ~/pyfemm.tar && rm ~/pyfemm.tar"
+```

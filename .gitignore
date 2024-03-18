@@ -1,3 +1,6 @@
 runs/*
+run/*
+complete_runs/*
 research/*
 */__pycache__/*
+test/*

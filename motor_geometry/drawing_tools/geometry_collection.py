@@ -4,7 +4,6 @@ import femm
 import math
 
 from typing import List, Tuple
-from utils.motor_config_helper import MotorConfig
 
 PRECISION = 1e-6
 
@@ -161,13 +160,10 @@ def load_materials(config):
             raise NotImplementedError('custom materials not yet supported')
 
 
-def add_circuits(config) -> List[str]:
-    circuit_names = list(set(config.GetCircuits()))
-
-    for name in circuit_names:
+def add_circuits(circuits: List[str]):
+    # add all unique circuits to the problem
+    for name in list(set(circuits)):
         femm.mi_addcircprop(name, 0, 1)
-
-    return circuit_names
 
 
 def define_problem(config):

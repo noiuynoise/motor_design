@@ -28,20 +28,29 @@
             "library": "24 AWG"
         }
     ],
+    "stator": {
+        "slots": 6,
+        "material": "laminations"
+      },
+      "rotor": {
+        "poles": 4,
+        "material": "laminations",
+        "shaft_material": "air"
+      },
     "winding": {
         "order": [
-            "a+",
-            "a-",
-            "b+",
-            "b-",
-            "c+",
-            "c-",
-            "a-",
-            "a+",
-            "b-",
-            "b+",
-            "c-",
-            "c+"
+            "a1+",
+            "a1-",
+            "b1+",
+            "b1-",
+            "c1+",
+            "c1-",
+            "a2-",
+            "a2+",
+            "b2-",
+            "b2+",
+            "c2-",
+            "c2+"
         ]
     }
 }
