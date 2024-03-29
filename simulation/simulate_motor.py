@@ -122,7 +122,7 @@ if __name__ == "__main__":
     femm.openfemm()
     output = simulate_motor(geometry, args.angle, currents, image_path = 'test/results/output.png', temp_path='test')
     with open('test/results/output.json', 'w') as f:
-        f.write(json.dumps(output, indent=4))
-    print(json.dumps(output, indent=4))
+        f.write(json.dumps(output, indent=1))
+    print(json.dumps(output, indent=1))
     femm.closefemm()
 

@@ -1,4 +1,9 @@
 {
+    "analysis": {
+        "angle_resolution": 1,
+        "voltage_resolution": 0.1,
+        "speed_resolution": 100
+    },
     "inverter": {
         "max_voltage": 30,
         "max_current": 40,
@@ -13,5 +18,12 @@
     },
     "settings": {
         "desired_current": 20
+    },
+    "motor": {
+        "wire_gauge": 26,
+        "parallel_strands": 1,
+        "number_of_turns": 50,
+        "termination": "series",
+        "packing": "square"
     }
 }

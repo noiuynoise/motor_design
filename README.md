@@ -12,3 +12,6 @@ The run_remote.sh script is meant to setup and run on a remote machine because F
 
 ## License
 This project is licensed under the Unlicense. Do what you want with this repository. If you make something cool I'd like to know - you can reach me at andrew.mularoni@gmail.com. I won't stop you but please no weapons development or neural network training. Really just don't sue me if it breaks something.
+
+## Third Party
+This project uses the Pyfemm library to interface with FEMM, both of which are licensed under the Aladdin Free Public License.

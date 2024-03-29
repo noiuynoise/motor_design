@@ -1,6 +1,6 @@
 #!/bin/bash
 
-from motor_geometry.srm_design.srm_geometry import SrmGeometry
+from motor_geometry.interface.motor_geometry_factory import MakeGeometry
 import os
 import femm
 
@@ -8,7 +8,7 @@ import femm
 if __name__ == "__main__":
     os.makedirs("run/geometry", exist_ok=True)
     os.system("cp motor_config.json run/geometry/motor_config.json")
-    motor = SrmGeometry("run/geometry")
+    motor = MakeGeometry("run/geometry")
     femm.openfemm()
     motor.GenerateGeometry()
     femm.closefemm()

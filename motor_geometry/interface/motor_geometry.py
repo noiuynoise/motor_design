@@ -1,10 +1,8 @@
 #!/bin/python3
 
 from abc import ABC, abstractmethod
-import femm
 import json
 import os
-from typing import Dict
 
 class MotorGeometry(ABC):
     def __init__(self, folder: str):
@@ -40,7 +38,7 @@ class MotorGeometry(ABC):
 
     @abstractmethod
     def GetWindingCrossSection(self) -> float:
-        # Get the area of the winding cross section in mm^2
+        # Get the area of the winding cross section (all conductors) in m^2
         raise NotImplementedError("GetWindingCrossSection not implemented")
 
     @abstractmethod
@@ -55,6 +53,14 @@ class MotorGeometry(ABC):
     @property
     def pole_pitch(self) -> float:
         return 360 / self.config['rotor']['poles']
+
+    @property
+    def num_slots(self) -> int:
+        return self.config['stator']['slots']
+
+    @property
+    def num_poles(self) -> int:
+        return self.config['rotor']['poles']
 
     def GetCircuits(self):
         windings = self.config["winding"]["order"]

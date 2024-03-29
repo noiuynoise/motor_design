@@ -4,6 +4,7 @@ import os
 import json
 import numpy as np
 from scipy.interpolate import RegularGridInterpolator
+from motor_geometry.interface.motor_geometry_factory import MakeGeometry
 
 def FlattenDict(entry: Dict[str, any]) -> Dict[str, float]:
     result_names = {}
@@ -23,7 +24,10 @@ def test_FlattenDict():
 
 
 class SimulationResults:
-    SIMULATION_INFO_FILE = '/combined/simulation_info.json'
+    GEOMETRY_FOLDER = '/geometry'
+    COMBINED_FOLDER = '/combined'
+    SIMULATION_INFO_FILE = COMBINED_FOLDER + '/simulation_info.json'
+    SIMULATION_CONFIG_FILE = '/simulation_config.json'
 
     def __init__(self, results_folder: str):
         self.results_folder = results_folder
@@ -66,14 +70,26 @@ class SimulationResults:
     def IsCombined(self) -> bool:
         return os.path.isfile(self.results_folder + self.SIMULATION_INFO_FILE)
 
+    def __GetGeometryInfo(self):
+        # don't import this unles we need it
+        geometry = MakeGeometry(self.results_folder + self.GEOMETRY_FOLDER)
+
+        # copy over the geometry info we need for analysis
+        self['winding_area'] = geometry.GetWindingCrossSection()
+        self['avg_coil_length'] = geometry.GetAvgCoilLength()
+        self['slot_pitch'] = geometry.slot_pitch
+        self['pole_pitch'] = geometry.pole_pitch
+        self['num_slots'] = geometry.num_slots
+        self['num_poles'] = geometry.num_poles
+
     def __CombineResults(self):
-        # combine results from all runs into results_folder/combined folder
+        # combine results from all runs into combined folder
         if not os.path.isdir(self.results_folder):
             raise FileNotFoundError('results folder not found')
-        if not os.path.isdir(self.results_folder + '/combined'):
-            os.mkdir(self.results_folder + '/combined')
+        if not os.path.isdir(self.results_folder + self.COMBINED_FOLDER):
+            os.mkdir(self.results_folder + self.COMBINED_FOLDER)
         
-        sim_config_location = self.results_folder + '/simulation_config.json'
+        sim_config_location = self.results_folder + self.SIMULATION_CONFIG_FILE
         if not os.path.isfile(sim_config_location):
             raise FileNotFoundError('no config file found')
 
@@ -116,11 +132,14 @@ class SimulationResults:
                 for key, value in flat_entry.items():
                     np.put(self.data[key], (run_number * num_angle_steps) + angle_index, value)
         
+        # load geometry info
+        self.__GetGeometryInfo()
+
         # save the combined data
         for key in self.data:
-            np.save(self.results_folder + '/combined/' + key + '.npy', self.data[key])
+            np.save(self.results_folder + self.COMBINED_FOLDER + '/' + key + '.npy', self.data[key])
         with open(self.results_folder + self.SIMULATION_INFO_FILE, 'w') as f:
-            f.write(json.dumps(self.info))
+            f.write(json.dumps(self.info, indent=1))
 
     def __LoadResults(self):
         # load results that have already been combined
@@ -128,9 +147,9 @@ class SimulationResults:
             raise FileNotFoundError('simulation info file not found')
         with open(self.results_folder + self.SIMULATION_INFO_FILE, 'r') as f:
             self.info = json.loads(f.read())
-        for file in os.listdir(self.results_folder + '/combined'):
-            if os.path.isfile(self.results_folder + '/combined/' + file) and file[-4:] == '.npy':
-                self.data[file[:-4]] = np.load(self.results_folder + '/combined/' + file)
+        for file in os.listdir(self.results_folder + self.COMBINED_FOLDER):
+            if os.path.isfile(self.results_folder + self.COMBINED_FOLDER + file) and file[-4:] == '.npy':
+                self.data[file[:-4]] = np.load(self.results_folder + self.COMBINED_FOLDER + file)
 
     def InterpolatePoint(self, driven_coils: Dict[str, float], data_name: str, angle: float) -> float:
         phase_mmf_values = [0] * len(self['driven_phases'])

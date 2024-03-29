@@ -2,6 +2,8 @@
 
 This container runs pyFEMM in a container so you don't have to mess around with WINE to get everything running yourself.
 
+Image is available here: https://hub.docker.com/repository/docker/noiuynoise/pyfemm/general
+
 ## Building the container
 Due to GUI elements, the container cannot be automatically built. To build the container, first build the base container:
 ```

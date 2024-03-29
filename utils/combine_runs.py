@@ -134,7 +134,7 @@ def CombineRuns(run_location: str):
         "angle_min": angle_min
     }
     with open(args.run_location + '/combined/step.json', 'w') as f:
-        f.write(json.dumps(angle_step_data, indent=4))
+        f.write(json.dumps(angle_step_data, indent=1))
 
     a_current = np.ndarray.flatten(combined_data['a_current'])
     b_current = np.ndarray.flatten(combined_data['b_current'])

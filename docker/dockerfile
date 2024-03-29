@@ -15,7 +15,9 @@ RUN apt-get update && apt-get install -y \
   vim \
   git \
   wget \
-  sudo
+  sudo \
+  xvfb \
+  ghostscript
 
 RUN mkdir -pm755 /etc/apt/keyrings
 RUN wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
@@ -39,6 +41,7 @@ RUN ln -s /code /home/devuser/.wine/drive_c/users/devuser/Favorites
 
 ENV WINEDEBUG=-all
 ENV PYTHONUNBUFFERED=1
+ENV SIM_RUNNER=1
 
 USER devuser
 WORKDIR /code

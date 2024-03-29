@@ -2,11 +2,10 @@ import femm
 import os
 import json
 from simulation import simulate_motor
-from analysis import make_plots
 import time
 import argparse
 import imageio
-from motor_geometry.srm_design.srm_geometry import SrmGeometry
+from motor_geometry.interface.motor_geometry_factory import MakeGeometry
 from typing import List, Dict
 
 def GetMMFDict(run: int, steps: List[Dict[str, float]]) -> Dict[str, float]:
@@ -43,8 +42,9 @@ if __name__ == "__main__":
 
     mmf_dict = GetMMFDict(args.runner_number, config['driven_phases'])
     angle_step = config['angle_step']
+    max_angle = config['angle_max']
 
-    motor = SrmGeometry('run/geometry')
+    motor = MakeGeometry('run/geometry')
     start_time = time.monotonic()
 
     run_folder = f'run/run_{args.runner_number}'
@@ -52,25 +52,29 @@ if __name__ == "__main__":
 
     results = []
     femm.openfemm()
-    for angle in range(0, int(motor.pole_pitch), angle_step):
-        print(
-            f'running angle {angle} at time {time.monotonic() - start_time}\n')
+    last_time = start_time
+    num_steps = int(max_angle / angle_step)
+    for idx in range(0, num_steps, 1):
+        angle = idx * angle_step
         image = run_folder + f'/image_{angle}.png'
         results.append(simulate_motor.simulate_motor(motor,
                                                      angle,
                                                      mmf_dict,
                                                      image_path=image,
                                                      temp_path=run_folder))
+        print(
+            f'ran angle {angle} in  {time.monotonic() - last_time}s\n')
+        last_time = time.monotonic()
     femm.closefemm()
     images = []
     for i in range(0, len(results)):
         images.append(imageio.imread(run_folder + f'/image_{i * angle_step}.png'))
     imageio.mimsave(run_folder + '/rotation.gif', images, loop=0, duration=(2.0 / len(results)))
     with open(run_folder + '/results.json', 'w') as f:
-        f.write(json.dumps(results, indent=4))
+        f.write(json.dumps(results, indent=1))
 
     end = time.monotonic()
     print(f'time elapsed: {end - start}\n')
     run_stats['time'] = end - start
     with open(run_folder + '/run.json', 'w') as f:
-        f.write(json.dumps(run_stats, indent=4))
+        f.write(json.dumps(run_stats, indent=1))

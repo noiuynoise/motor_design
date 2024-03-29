@@ -1,12 +1,14 @@
 #!/bin/python3
-
-import femm
 import math
+import sys
 
 from typing import Dict, Any, List
 from motor_geometry.drawing_tools.geometry_collection import *
 from motor_geometry.interface.motor_geometry import MotorGeometry
 
+import os
+if 'SIM_RUNNER' in os.environ:
+    import femm
 
 class SrmGeometry(MotorGeometry):
     def __init__(self, config_file: str):
@@ -243,10 +245,48 @@ class SrmGeometry(MotorGeometry):
         femm.mi_moverotate(0, 0, angle)  
 
     def GetAvgCoilLength(self) -> float:
-        return 0
+        tooth_tip_width = self.config['stator']['tooth_tip_width']
+        tooth_root_width = self.config['stator']['tooth_root_width']
+        winding_outer_radius = self.config['stator']['outer_diameter'] / 2 - self.config['stator']['spine_width']
+        tooth_mid_angle = math.asin(
+            (tooth_root_width + tooth_tip_width) / 4 / winding_outer_radius)
+        
+        outer_winding_angle = math.pi / self.config['stator']['slots']
+
+        winding_centerpoint_angle = (outer_winding_angle + tooth_mid_angle) / 2
+    
+        winding_inner_radius = self.config['stator']['inner_diameter'] / 2 - self.config['stator']['winding_inner_clearance']
+        winding_avg_radius = (winding_inner_radius + winding_outer_radius) / 2
+
+        winding_top_length = winding_avg_radius * winding_centerpoint_angle * 2
+
+        total_length_mm =  (winding_top_length + self.config['simulation']['depth']) * 2
+        return total_length_mm / 1000
 
     def GetWindingCrossSection(self) -> float:
-        return 0
+        # approximate the winding cross section
+        winding_inner_radius = self.config['stator']['inner_diameter'] / 2 - self.config['stator']['winding_inner_clearance']
+        tooth_tip_width = self.config['stator']['tooth_tip_width']
+        tooth_root_width = self.config['stator']['tooth_root_width']
+        winding_outer_radius = self.config['stator']['outer_diameter'] / 2 - self.config['stator']['spine_width']
+        #tooth_mid_angle = math.asin(
+        #    (tooth_root_width + tooth_tip_width) / 4 / winding_outer_radius)
+        
+        outer_winding_angle = math.pi / self.config['stator']['slots']
+        #winding_angle = outer_winding_angle - tooth_mid_angle
+
+        outer_annulus_area = (winding_outer_radius ** 2) * math.pi * (outer_winding_angle / (2 * math.pi))
+        inner_annulus_area = (winding_inner_radius ** 2) * math.pi * (outer_winding_angle / (2 * math.pi))
+        
+        annulus_area = outer_annulus_area - inner_annulus_area
+
+        rectangle_area = ((tooth_tip_width + tooth_root_width) / 2) * (winding_outer_radius - winding_inner_radius) / 2
+
+        area_estimate_mm2 = annulus_area - rectangle_area
+        
+        area_estimate_m2 = area_estimate_mm2 / 1e6
+        # good 'nuff but will not work as well for low slot counts
+        return area_estimate_m2
 
 
 if __name__ == "__main__":
@@ -256,6 +296,7 @@ if __name__ == "__main__":
     try:
         geometry = SrmGeometry(filepath)
         geometry.GenerateGeometry()
+        print(geometry.GetAvgCoilLength())
     except Exception as e:
         print(e)
     femm.closefemm()

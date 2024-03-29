@@ -1,6 +1,7 @@
 #!/bin/python3
-
-import femm
+import os
+if 'SIM_RUNNER' in os.environ:
+    import femm
 import math
 
 from typing import List, Tuple
