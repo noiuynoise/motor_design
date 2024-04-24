@@ -1,0 +1,40 @@
+from ubuntu:22.04
+
+# export timezone - for python3.9-dev install
+ENV TZ=America/Denver
+
+# place timezone data /etc/timezone
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN dpkg --add-architecture i386
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+  python3 \
+  python3-pip \
+  vim \
+  git \
+  wget \
+  sudo \
+  xvfb \
+  software-properties-common
+
+RUN apt-add-repository -y ppa:elmer-csc-ubuntu/elmer-csc-ppa
+
+RUN apt-get update && apt-get install -y \
+  elmerfem-csc
+
+RUN pip3 install colorama imageio
+
+
+# Configure user
+RUN addgroup --gid 1000 devuser
+RUN adduser --disabled-password --gecos "" --uid 1000 --gid 1000 devuser
+ENV HOME /home/devuser
+RUN echo 'ALL            ALL = (ALL) NOPASSWD: ALL' >> /etc/sudoers
+
+ENV PYTHONUNBUFFERED=1
+ENV SIM_RUNNER=1
+
+USER devuser
+WORKDIR /code

@@ -17,8 +17,8 @@
   "materials": [
     {
       "name": "laminations",
-      "library": "M-15 Steel",
-      "saturation": 2.30001
+      "library": "1018 Steel",
+      "saturation": 2.43001
     },
     {
       "name": "air",
@@ -26,14 +26,14 @@
     },
     {
       "name": "coil",
-      "library": "24 AWG"
+      "library": "Copper"
     }
   ],
   "stator": {
     "slots": 6,
     "tooth_tip_width": 3.0,
     "tooth_root_width": 3.0,
-    "inner_diameter": 10.2,
+    "inner_diameter": 11.0,
     "winding_inner_clearance": 0.3,
     "outer_diameter": 22,
     "spine_width": 1.75,

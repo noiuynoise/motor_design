@@ -4,3 +4,6 @@ complete_runs/*
 research/*
 */__pycache__/*
 test/*
+rmrrf/*
+*.pyc
+*.tar

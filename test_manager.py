@@ -72,8 +72,11 @@ if __name__ == '__main__':
             time.sleep(5)
         command = ['docker', 'run', '-d', '--rm', '--init', '--name', f'{id}_{i}',
                    '-v', f'{os.path.dirname(os.path.realpath(__file__))}:/code', '--env', 'SIM_RUNNER=1',
-                   'pyfemm', 'xvfb-run', 'python3', '-u', 'simulate_rotation.py'] + [str(i)]
-        subprocess.Popen(command, stdout=subprocess.PIPE).wait()
+                   'pyfemm', 'xvfb-run', 'python3', '-u', 'simulate_rotation.py'] + [str(i)] # + ['>', f'run/run_{str(i)}.log']
+        try:
+            subprocess.Popen(command, stdout=subprocess.PIPE).wait(timeout=10)
+        except subprocess.TimeoutExpired:
+            print(f'runner {i} failed to start')
         time.sleep(1)
     print('\nwaiting for runners to complete')
 
