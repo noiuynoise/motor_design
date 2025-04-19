@@ -1,0 +1,55 @@
+{
+  "geometry": "pcb_linear_motor",
+  "simulation": {
+    "automesh": true,
+    "mesh_size": 0.5,
+    "airgap_material": "air",
+    "units": "millimeters",
+    "frequency": 0,
+    "problem_type": "planar",
+    "precision": 1e-8,
+    "depth": 10,
+    "min_angle": 30,
+    "solver": 0,
+    "outer_material": "air",
+    "boundary_margin": 2
+  },
+  "materials": [
+    {
+      "name": "laminations",
+      "library": "M-15 Steel",
+      "saturation": 2.30001
+    },
+    {
+      "name": "air",
+      "library": "Air"
+    },
+    {
+      "name": "coil",
+      "library": "36 AWG"
+    },
+    {
+      "name": "copper",
+      "library": "Copper"
+    }
+  ],
+  "pcb": {
+    "core_thickness": 0.8,
+    "copper_thickness": 0.035,
+    "trace_width": 0.1,
+    "trace_pitch": 0.2,
+    "num_traces": 30,
+    "both_sides": false,
+    "backer_thickness": 0.3,
+    "backer_spacing": 0.1,
+    "backer_material": "laminations"
+  },
+  "rotor": {
+
+  },
+  "winding": {
+    "num_phases": 3,
+    "traces_per_coil": 3,
+    "coil_material": "copper"
+  }
+}

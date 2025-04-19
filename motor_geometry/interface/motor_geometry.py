@@ -29,6 +29,10 @@ class MotorGeometry(ABC):
         return os.path.isfile(self.femm_file)
     
     @abstractmethod
+    def SetFrequency(self, frequency: float):
+        raise NotImplementedError("SetFrequency not implemented")
+    
+    @abstractmethod
     def RotateRotor(self, angle: float):
         raise NotImplementedError("RotateRotor not implemented")
 

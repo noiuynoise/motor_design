@@ -1,0 +1,10 @@
+{
+  "start_frequency_exp": 2,
+  "end_frequency_exp": 6,
+  "runs_per_decade": 5,
+  "currents": {
+    "A": {"re": 1, "im": 0},
+    "B": {"re": 0.5, "im": 0.866},
+    "C": {"re": 0.5, "im": 0.866}
+  }
+}

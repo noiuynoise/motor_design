@@ -94,6 +94,12 @@ class GeometryCollection:
                     radius[0], center, i), radius[1])
         return output
 
+    def add_rectangle(self, start: Tuple[float, float], end: Tuple[float, float]):
+        self.add_line(start, (end[0], start[1]))
+        self.add_line((end[0], start[1]), end)
+        self.add_line(end, (start[0], end[1]))
+        self.add_line((start[0], end[1]), start)
+
     def draw(self):
         for point in self.points:
             femm.mi_clearselected()

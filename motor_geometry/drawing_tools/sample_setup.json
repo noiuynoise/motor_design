@@ -10,12 +10,11 @@
         "depth": 10,
         "min_angle": 30,
         "solver": 0,
-        "outer_material": "air",
-        "outer_diameter": 30
+        "outer_material": "air"
     },
     "materials": [
         {
-            "name": "laminations",
+            "name": "rotor",
             "library": "M-15 Steel",
             "saturation": 2.30001
         },
@@ -25,32 +24,29 @@
         },
         {
             "name": "coil",
-            "library": "24 AWG"
+            "library": "36 AWG"
+        },
+        {
+            "name": "copper",
+            "library": "Copper"
         }
     ],
-    "stator": {
-        "slots": 6,
-        "material": "laminations"
-      },
-      "rotor": {
-        "poles": 4,
-        "material": "laminations",
-        "shaft_material": "air"
-      },
+    "pcb": {
+        "core_thickness": 1.6,
+        "copper_thickness": 0.035,
+        "trace_pitch": 0.2,
+        "trace_width": 0.1,
+        "num_traces": 60,
+        "num_coil_layers": 2,
+        "both_sides": true
+    },
+    "rotor": {
+        "material": "Copper",
+        "thickness": 0.2,
+        "length": 10
+    },
     "winding": {
-        "order": [
-            "a1+",
-            "a1-",
-            "b1+",
-            "b1-",
-            "c1+",
-            "c1-",
-            "a2-",
-            "a2+",
-            "b2-",
-            "b2+",
-            "c2-",
-            "c2+"
-        ]
+        "num_phases": 3,
+        "num_parallel": 3
     }
 }

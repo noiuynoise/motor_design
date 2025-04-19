@@ -1,5 +1,6 @@
 from motor_geometry.interface.motor_geometry import MotorGeometry
 from motor_geometry.srm_design.srm_geometry import SrmGeometry
+from motor_geometry.pcb_linear_motor.pcb_linear_motor_geometry import PcbLinearMotorGeometry
 import os
 import json
 
@@ -15,5 +16,7 @@ def MakeGeometry(folder: str) -> MotorGeometry:
     geometry = config['geometry']
     if geometry == 'srm':
         return SrmGeometry(folder)
+    elif geometry == 'pcb_linear_motor':
+        return PcbLinearMotorGeometry(folder)
     else:
         raise ValueError('unknown geometry type')

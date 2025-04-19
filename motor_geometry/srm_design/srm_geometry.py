@@ -5,6 +5,7 @@ import sys
 from typing import Dict, Any, List
 from motor_geometry.drawing_tools.geometry_collection import *
 from motor_geometry.interface.motor_geometry import MotorGeometry
+from copy import deepcopy
 
 import os
 if 'SIM_RUNNER' in os.environ:
@@ -287,6 +288,11 @@ class SrmGeometry(MotorGeometry):
         area_estimate_m2 = area_estimate_mm2 / 1e6
         # good 'nuff but will not work as well for low slot counts
         return area_estimate_m2
+
+    def SetFrequency(self, frequency: float):
+        config = deepcopy(self.config)
+        config['simulation']['frequency'] = frequency
+        define_problem(config)
 
 
 if __name__ == "__main__":
