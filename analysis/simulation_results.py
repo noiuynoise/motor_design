@@ -173,7 +173,7 @@ class SimulationResults:
 
 
 if __name__ == "__main__":
-    results = SimulationResults('complete_runs/run_11')
+    results = SimulationResults('complete_runs/run_5')
     import matplotlib.pyplot as plt
     print(results.InterpolatePoint({'a1': 60, 'a2': 60, 'b1': 0, 'b2': 0, 'c1': 0, 'c2': 0}, 'torque', 30))
     print(results.data['torque'][0,0,15,15])

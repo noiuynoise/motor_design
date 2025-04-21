@@ -109,7 +109,7 @@ class MotorAnalyser:
         # simulate rotation at a given speed (in RPM)
         results = {"speed": speed, "flux": []}
         for angle in range(0, 360, self['motor']['angle_step']):
-            
+            pass
 
         # return torque, current, etc
         return results
@@ -118,7 +118,7 @@ class MotorAnalyser:
 
 
 if __name__ == "__main__":
-    analyser = MotorAnalyser('analysis/analysis_config.json', 'run')
+    analyser = MotorAnalyser('analysis/analysis_config.json', 'complete_runs/run_5')
     print(analyser.GetFillFactor())
     print(analyser.GetConductorArea())
     print(analyser['motor']['wire_gauge'])

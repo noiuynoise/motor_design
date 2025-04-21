@@ -1,4 +1,4 @@
-from ubuntu:22.04
+FROM ubuntu:22.04
 
 # export timezone - for python3.9-dev install
 ENV TZ=America/Denver
@@ -27,7 +27,7 @@ RUN apt-get update && apt-get install -y --install-recommends winehq-stable
 
 RUN pip3 install pyfemm PyQt5 colorama imageio
 
-RUN wget -O /usr/share/femm.exe "https://www.femm.info/wiki/Files/files.xml?action=download&file=femm42bin_x64_21Apr2019.exe"
+RUN wget -O /usr/share/femm_install.exe "https://www.femm.info/wiki/Files/files.xml?action=download&file=femm42bin_x64_21Apr2019.exe"
 
 # Configure user
 RUN addgroup --gid 1000 devuser

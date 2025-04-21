@@ -58,7 +58,7 @@ if __name__ == '__main__':
 
     print(
         f'starting {args.num_runners} runners. Start: {args.run_start} End: {args.run_end}')
-    for i in range(args.run_start, args.run_end + 1, 1):
+    for i in range(args.run_start, args.run_end + 1, 1).reverse():
         while (get_running_containers(id) >= args.num_runners):
             runs_complete = max(
                 0, i - get_running_containers(id) - args.run_start)

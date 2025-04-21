@@ -4,6 +4,12 @@ This container runs pyFEMM in a container so you don't have to mess around with 
 
 Image is available here: https://hub.docker.com/repository/docker/noiuynoise/pyfemm/general
 
+## Setup
+To allow GUIs from docker containers to be shown during setup run the following command on the dev machine:
+```
+xhost +local:docker
+```
+
 ## Building the container
 Due to GUI elements, the container cannot be automatically built. To build the container, first build the base container:
 ```
@@ -11,7 +17,7 @@ docker build -t pyfemm_base .
 ```
 Then run the container and install FEMM
 ```
-docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY --name pyfemm_install pyfemm_base wine /usr/share/femm.exe
+docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY --name pyfemm_install pyfemm_base wine /usr/share/femm_install.exe
 ```
 
 
@@ -26,7 +32,7 @@ docker image rm pyfemm_base
 
 To run FEMM run:
 ```
-docker run -it --rm -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY pyfemm wine /usr/share/femm.exe
+docker run -it --rm -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY pyfemm wine ~/.wine/drive_c/femm42/bin/femm.exe
 ```
 
 To get a bash shell in the container run:
