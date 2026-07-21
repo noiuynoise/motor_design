@@ -4,8 +4,8 @@
   "driven_phases":
   [
     {
-      "steps": 10,
-      "coils": {"a1": 5, "a2": 5}
+      "steps": 20,
+      "coils": {"a1": 10, "a2": 10}
     },
     {
       "steps": 1,

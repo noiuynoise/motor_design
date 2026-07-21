@@ -8,12 +8,21 @@ import random
 
 
 def get_containers():
-    containers_proc = subprocess.Popen(
-        ['docker', 'ps', '-a', '--format', '{{json .}}'], stdout=subprocess.PIPE)
-    jq_proc = subprocess.Popen(
-        ['jq', '--tab', '-s', '.'], stdin=containers_proc.stdout, stdout=subprocess.PIPE)
-    jq_proc.wait()
-    return json.loads(jq_proc.communicate()[0].decode('utf-8'))
+    print("getting containers")
+    output = None
+    while (output is None):
+        try:
+            containers_proc = subprocess.Popen(
+                ['docker', 'ps', '-a', '--format', '{{json .}}'], stdout=subprocess.PIPE)
+            jq_proc = subprocess.Popen(
+                ['jq', '--tab', '-s', '.'], stdin=containers_proc.stdout, stdout=subprocess.PIPE)
+            jq_proc.wait(timeout=10)
+            output = json.loads(jq_proc.communicate()[0].decode('utf-8'))
+        except subprocess.TimeoutExpired:
+            print("jq process expired")
+            continue
+    print("containers got")
+    return output
 
 
 def get_running_containers(id=None):
@@ -58,7 +67,7 @@ if __name__ == '__main__':
 
     print(
         f'starting {args.num_runners} runners. Start: {args.run_start} End: {args.run_end}')
-    for i in range(args.run_start, args.run_end + 1, 1).reverse():
+    for i in range(args.run_end + 1, args.run_start, -1):
         while (get_running_containers(id) >= args.num_runners):
             runs_complete = max(
                 0, i - get_running_containers(id) - args.run_start)
@@ -75,6 +84,7 @@ if __name__ == '__main__':
                    'pyfemm', 'xvfb-run', 'python3', '-u', 'simulate_rotation.py'] + [str(i)] # + ['>', f'run/run_{str(i)}.log']
         try:
             subprocess.Popen(command, stdout=subprocess.PIPE).wait(timeout=10)
+            print(f'runner {i} started')
         except subprocess.TimeoutExpired:
             print(f'runner {i} failed to start')
         time.sleep(1)
